@@ -1,12 +1,14 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
-from pathlib import Path
-from collections import defaultdict
 import os
 import re
 import sys
 import unicodedata
+from collections import defaultdict
+from dataclasses import dataclass
+from pathlib import Path
+
+print("")  # new line for CMake build comment
 
 ROOT = Path(sys.argv[1])
 OUTPUT = Path(sys.argv[2])
@@ -20,30 +22,29 @@ RESOURCE_TYPES = {
     "sounds": ("Sound", {".wav", ".mp3", ".ogg"}),
 }
 
-
 # C++ keywords must be disambiguated so generated identifiers remain valid
 # symbols in the emitted header.
 CPP_KEYWORDS = {
-    "alignas","alignof","and","and_eq","asm","atomic_cancel",
-    "atomic_commit","atomic_noexcept","auto","bitand","bitor",
-    "bool","break","case","catch","char","char8_t","char16_t",
-    "char32_t","class","compl","concept","const","consteval",
-    "constexpr","constinit","const_cast","continue","co_await",
-    "co_return","co_yield","decltype","default","delete","do",
-    "double","dynamic_cast","else","enum","explicit","export",
-    "extern","false","float","for","friend","goto","if","inline",
-    "int","long","mutable","namespace","new","noexcept","not",
-    "not_eq","nullptr","operator","or","or_eq","private",
-    "protected","public","register","reinterpret_cast","requires",
-    "return","short","signed","sizeof","static","static_assert",
-    "static_cast","struct","switch","template","this",
-    "thread_local","throw","true","try","typedef","typeid",
-    "typename","union","unsigned","using","virtual","void",
-    "volatile","wchar_t","while","xor","xor_eq",
+    "alignas", "alignof", "and", "and_eq", "asm", "atomic_cancel",
+    "atomic_commit", "atomic_noexcept", "auto", "bitand", "bitor",
+    "bool", "break", "case", "catch", "char", "char8_t", "char16_t",
+    "char32_t", "class", "compl", "concept", "const", "consteval",
+    "constexpr", "constinit", "const_cast", "continue", "co_await",
+    "co_return", "co_yield", "decltype", "default", "delete", "do",
+    "double", "dynamic_cast", "else", "enum", "explicit", "export",
+    "extern", "false", "float", "for", "friend", "goto", "if", "inline",
+    "int", "long", "mutable", "namespace", "new", "noexcept", "not",
+    "not_eq", "nullptr", "operator", "or", "or_eq", "private",
+    "protected", "public", "register", "reinterpret_cast", "requires",
+    "return", "short", "signed", "sizeof", "static", "static_assert",
+    "static_cast", "struct", "switch", "template", "this",
+    "thread_local", "throw", "true", "try", "typedef", "typeid",
+    "typename", "union", "unsigned", "using", "virtual", "void",
+    "volatile", "wchar_t", "while", "xor", "xor_eq",
 }
 
 WINDOWS_RESERVED_NAMES = {
-    "con","prn","aux","nul",
+    "con", "prn", "aux", "nul",
     *(f"com{i}" for i in range(1, 10)),
     *(f"lpt{i}" for i in range(1, 10)),
 }
@@ -155,12 +156,13 @@ def check_long_identifier(identifier: str) -> None:
             f'Identifier "{identifier}" is {len(identifier)} characters long.'
         )
 
+
 def collect_resources(
-    root: Path,
-    output: Path,
-    folder: str,
-    resource_type: str,
-    extensions: set[str],
+        root: Path,
+        output: Path,
+        folder: str,
+        resource_type: str,
+        extensions: set[str],
 ) -> list[Resource]:
     """
     Discover all resources of a given type and validate the generated
@@ -286,7 +288,6 @@ def collect_resources(
     resources: list[Resource] = []
 
     for file in files:
-
         identifier = identifiers[file]
 
         check_windows_reserved(identifier)
@@ -308,10 +309,11 @@ def collect_resources(
 
     return resources
 
+
 def emit_namespace(
-    lines: list[str],
-    resource_type: str,
-    resources: list[Resource],
+        lines: list[str],
+        resource_type: str,
+        resources: list[Resource],
 ) -> None:
     """
     Emit the embedded byte-array definitions for one resource category.
@@ -339,9 +341,9 @@ def emit_namespace(
 
 
 def emit_enum(
-    lines: list[str],
-    resource_type: str,
-    resources: list[Resource],
+        lines: list[str],
+        resource_type: str,
+        resources: list[Resource],
 ) -> None:
     """
     Emit the enum that gives each resource a stable identifier in C++.
@@ -368,8 +370,8 @@ def emit_enum(
 
 
 def emit_struct(
-    lines: list[str],
-    resource_type: str,
+        lines: list[str],
+        resource_type: str,
 ) -> None:
     """
     Emit the lightweight descriptor type used to describe a resource at runtime.
@@ -407,8 +409,8 @@ def manifest_entry(resource: Resource) -> str:
 
 
 def emit_manifest(
-    lines: list[str],
-    all_resources: dict[str, list[Resource]],
+        lines: list[str],
+        all_resources: dict[str, list[Resource]],
 ) -> None:
     """
     Emit the variant alias and the flattened manifest that can be indexed at
@@ -445,7 +447,7 @@ def emit_manifest(
 
 
 def generate_header(
-    all_resources: dict[str, list[Resource]],
+        all_resources: dict[str, list[Resource]],
 ) -> str:
     """
     Generate the complete C++ header that embeds all discovered assets.
@@ -501,6 +503,7 @@ def generate_header(
     )
 
     return "\n".join(lines)
+
 
 def main() -> None:
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)

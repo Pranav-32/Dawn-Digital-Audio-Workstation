@@ -33,9 +33,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 find_package(juce CONFIG REQUIRED)
+find_package(Catch2 3 REQUIRED)
 
 add_subdirectory(src/core)
 add_subdirectory(src/ui)
+
+add_subdirectory(tests)
 
 juce_add_gui_app(${BUILD_NAME}
         PRODUCT_NAME "DAWN Audio"
@@ -57,10 +60,10 @@ target_link_libraries(${BUILD_NAME} PRIVATE
         juce::juce_events
 )
 
-if(MSVC)
+if (MSVC)
     target_compile_options(${BUILD_NAME} PRIVATE /W4)
-endif()
+endif ()
 
-if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     target_compile_options(${BUILD_NAME} PRIVATE -Wno-c23-extensions)
-endif()
+endif ()

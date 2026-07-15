@@ -1,14 +1,20 @@
 #pragma once
 
 #include <format>
+#include <iostream>
 
-namespace dawn::core {
-    class Logger {
-    public:
+// Temporary logger intended for debugging during development.
+
+namespace dawn::core
+{
+    class Logger
+    {
+      public:
         Logger() = delete;
 
-        template <typename ...Args>
-        static void Debug(std::format_string<Args...> fmt, Args&&... args) {
+        template <typename... Args>
+        static void Debug(std::format_string<Args...> fmt, Args&&... args)
+        {
 
 #if defined(_DEBUG) || defined(DEBUG)
             const std::string msg = std::format(fmt, std::forward<Args>(args)...);
@@ -17,4 +23,4 @@ namespace dawn::core {
 #endif
         }
     };
-}
+} // namespace dawn::core

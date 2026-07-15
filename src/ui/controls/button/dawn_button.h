@@ -2,19 +2,36 @@
 
 #include <juce_gui_basics/juce_gui_basics.h>
 
-#include "ui/theme/styles/button_style.h"
+#include "ui/theme/theme_listener.h"
+#include "ui/theme/theme_manager.h"
 
-namespace dawn::ui::control {
+// Will be worked on
 
-    class DawnButton : public juce::Button {
-    public:
-        DawnButton(const juce::String& name, const theme::style::ButtonStyle& style):
-            juce::Button(name), style_(style) {}
+namespace dawn::ui::control
+{
 
-        void paintButton(juce::Graphics &g, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override;
-    private:
-        std::reference_wrapper<const theme::style::ButtonStyle> style_;
+    class DawnButton : public juce::Button, public theme::ThemeListener
+    {
+      public:
+        explicit DawnButton(const juce::String& name, const theme::ButtonStyleID styleID)
+            : Button(name), styleID_(styleID)
+        {
+            theme::ThemeManager::addListener(this);
+        }
+
+        ~DawnButton() override { theme::ThemeManager::removeListener(this); }
+
+        void setStyle(const theme::ButtonStyleID styleID) { styleID_ = styleID; }
+
+        void onThemeChange() override;
+
+      protected:
+        void paintButton(juce::Graphics& g, bool shouldDrawButtonAsHighlighted,
+                         bool shouldDrawButtonAsDown) override;
+
+      private:
+        theme::ButtonStyleID styleID_;
 
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DawnButton)
     };
-}
+} // namespace dawn::ui::control
